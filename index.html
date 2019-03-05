@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="keywords" content="手机诊股,同花顺,股票,手机炒股,炒股,诊股"/>
+  <meta name="description" content="同花顺手机诊股是由同花顺i问财驱动，从技术面、基本面、消息面、资金面全面诊断，经过大数据分析模型能够得出合理投资建议的股票证券交易分析诊断系统。"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0" />
+  <link rel="stylesheet" type="text/css" href="http://s.thsi.cn/css/m/adblock.css">
+  <title>同花顺手机诊股</title>        
+  <style type="text/css">
+      .blackskin{font-size:13px;color:#d2d2d3;-webkit-text-size-adjust: none; min-width:320px;background:#252528;font-family: "Helvetica Neue", Helvetica, STHeiTi, sans-serif;}
+      body{font-size:13px;color:#333;-webkit-text-size-adjust: none; min-width:320px;background:#f5f5f5;font-family: "Helvetica Neue", Helvetica, STHeiTi, sans-serif;}
+  </style>
+  <script type="text/javascript" src="http://s.thsi.cn/js/m/js/zepto.min.js"></script>
+  <script type="text/javascript" src="http://s.thsi.cn/cb?js/m/common/;basic.js;user.js;bridge.js;cookie.js;js/m/business/;share.js;stat.js;js/;ta.min.js&20160119"></script>
+  <script type="text/javascript" src="http://s.thsi.cn/js/m/advancediagnosestock/flot.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+  var hxtheme = getCssStyle();
+  var fileref=document.createElement("link");
+  fileref.setAttribute("rel", "stylesheet");
+  fileref.setAttribute("type", "text/css"); 
+  if(hxtheme == "black"){
+      $("body").addClass("blackskin");
+      fileref.setAttribute("href", "http://s.thsi.cn/css/m/advancediagnosestock/cssblack.20160119.css");
+  }else{
+      fileref.setAttribute("href", "http://s.thsi.cn/css/m/advancediagnosestock/css.20160119.css");
+  } 
+  document.getElementsByTagName("head")[0].appendChild(fileref);
+</script>
+<section style="width:100%;height:100%;overflow:auto;">
+<div class="loading"><img src="http://s.thsi.cn/css/m/advancediagnosestock/big_load.gif"></div>
+<div class="maincont">
+    <div class="zonghe">
+        <div class="zonghetop">
+            <% if(info&&info.length!=0) {%>
+            <div class="zonghe_img">
+                <canvas id="process" width="120" height="120"></canvas>
+                <p class="processtit"><%= info.name %></p>
+                    <span class="processtxt">
+                      <% scorebig=info.score.substring(0, 1)%>
+                      <% scoresmall=info.score.substring(info.score.length - 2, info.score.length)%>
+                        <ins class="scoreall" style="display: none"><%= info.score %></ins>
+                        <ins class="scorebig"><%= scorebig %></ins>
+                        <ins class="scoresmall"><%= scoresmall %></ins>
+                    </span>
+                <p class="processbot"><span>0</span><span>10</span></p>
+            </div>
+            <div class="zonghe_h">            
+                <h2><%= info.name %>(<%= info.stockcode %>)</h2>
+                <p>打败了<%= info.ko %>%的股票</p>
+               <% if(info.advice==1) { %>
+        <h3 class='greentxt'>建议卖出</h3>
+        <% } %>
+        <% if(info.advice==2) { %>
+        <h3 class='greentxt'>建议减持</h3>
+        <% } %>
+        <% if(info.advice==3) { %>
+        <h3 class='blacktxt'>保持观望</h3>
+        <% } %>
+        <% if(info.advice==4) { %>
+        <h3 class='redtxt'>建议增持</h3>
+        <% } %>
+        <% if(info.advice==5) { %>
+        <h3 class='redtxt'>建议买入</h3>
+        <% } %> 
+            </div>
+             <% } %>    
+        </div>
+        <p class="zhbottxt">
+                近期的平均成本为<strong><%= info.contentstrong%></strong>，<%= info.contentmiddle %>。
+        </p>
+    </div>
+    <div id="aspects">
+      <!-- 技术面分析 -->
+      <div class="technology">
+        <div class="title"><h3><ins></ins>技术面分析</h3></div>
+        <div class="technology_main">
+          <div id="maxbox">
+            <% 
+            for (var i = 1; technology&&i <= technology.length; i++) {
+              var type = technology[i - 1].type;
+              var typetxt = "";
+              if (type == '1') {
+                type = "box_black";
+                typetxt = "观望";
+              }  
+              if (type == '2') {
+                type = "";
+                typetxt = "看好";
+              } 
+              if (type == '0') {
+                type = "box_green";
+                typetxt = "看空";
+              }
+              var datatit = technology[i - 1].title;
+              %>
+              <% if (i % 3 == 1) { %>
+              <% if (i > 6) { %>
+              <div class='box' style='display:none'><p class="plist <%= type %>" data-type="<%= typetxt%>" data-list="type<%= i%>" style="display:none;" data-tit="<%= technology[i - 1].title %>"><span><%= datatit%></span><i></i></p>  
+                <%} else {%>
+                <div class='box'><p class="plist <%= type %>" data-type="<%= typetxt%>" data-list="type<%= i%>" data-tit="<%= technology[i - 1].title %>"><span><%= datatit%></span><i></i></p>           
+                  <% } %> 
+                  <% }else{ %> 
+                  <% if(i>6) {%>
+                  <p class="plist " style="display:none;" data-type="<%= typetxt%>" data-list="type<%= i %>" data-tit="<%= datatit %>"><span><%= datatit %></span><i></i></p> 
+                  <% }else{ %> 
+                  <p class="plist " data-type="<%= typetxt%>" data-list="type<%= i %>" data-tit="<%= datatit %>"><span><%= datatit %></span><i></i></p> 
+                  <% } %>  
+                  <% } %> 
+
+                  <% if (i % 3 == 0 && i != ( technology.length)){ %>
+                </div>
+                <div class="technology_cont"><div class="innercont"></div><div class="innercont"></div><div class="innercont"></div></div>
+                <% } %>
+                <% } %>
+              </div>
+              <% if((!technology)||technology.length==0){ %>
+              <h3 class='mtop20 greytxt'>暂时无数据</h3>
+              <% }else{ %>
+              <% if((technology)&&technology.length>6){ %>
+              <a class="techmore">点击展开更多</a>
+              <% } %>
+              <% } %>
+              
+            </div>
+
+        <!-- 资金面 -->
+        <div class="capital">
+                <div class="title"><h3><ins></ins>资金面分析</h3></div>
+                <div class="capital_main">
+                        
+          <p class="plist box_green" data-type="看空" id="fundlist0">最近一个交易日资金总体呈流出状态，共流出2929.31万元。<i></i></p><div class="fundshow"></div>
+                        
+          <p class="plist " data-type="看好" id="fundlist1">最近一个交易日银行行业资金总体呈流入状态，共流入36741.98万元。<i></i></p><div class="fundshow"></div>
+                        
+          <p class="plist box_green" data-type="看空" id="fundlist2">近5日内该股资金总体无进出，远高于行业平均水平，5日共流出5269.64万元。<i></i></p><div class="fundshow"></div>
+                        
+          <p class="plist box_black" data-type="观望" id="fundlist3">银行行业，近5日资金总体无进出。<i></i></p><div class="fundshow"></div>
+                        
+                                                
+                </div>
+        </div>
+<!-- 消息面 -->
+        <div class="information">
+                <div class="title"><h3><ins></ins>消息面分析</h3></div>
+                <div class="information_main">          
+                        
+                
+                <h3 class='mtop20 greytxt'>暂无明确利好或利空消息</h3>
+                
+                </div>          
+        </div>
+<!-- 基本面 -->
+<div class="basic">
+  <div class="title"><h3><ins></ins>基本面分析</h3></div>
+  <div class="basic_main">
+    <div id="maxbox2">
+      
+            
+              <div class='box'><p class="plist box_black" data-type="观望" data-list="type1" data-tit="每股净资产"><span>每股净资产</span><i></i></p> 
+                
+            
+                <p class="plist box_black" data-type="观望" data-list="type2" data-tit="市盈率"><span>市盈率</span><i></i></p>
+                
+            
+                <p class="plist box_black" data-type="观望" data-list="type3" data-tit="摊薄每股收益"><span>摊薄每股收益</span><i></i></p>
+                
+              </div>     
+              <div class="main_cont"><div class="innercont"></div><div class="innercont"></div><div class="innercont"></div></div>
+              
+            
+              <div class='box'><p class="plist box_black" data-type="观望" data-list="type4" data-tit="净利润增长率"><span>净利润增长率</span><i></i></p> 
+                
+            
+                <p class="plist box_black" data-type="观望" data-list="type5" data-tit="营业收入增长率"><span>营业收入增长率</span><i></i></p>
+                
+            
+                <p class="plist box_black" data-type="观望" data-list="type6" data-tit="市净率"><span>市净率</span><i></i></p>
+                
+              </div>     
+              <div class="main_cont"><div class="innercont"></div><div class="innercont"></div><div class="innercont"></div></div>
+              
+            
+              <div class='box'><p class="plist box_black" data-type="观望" data-list="type7" data-tit="净资产收益率"><span>净资产收益率</span><i></i></p> 
+                
+            
+                <p class="plist box_black" data-type="观望" data-list="type8" data-tit="销售净利率"><span>销售净利率</span><i></i></p>
+                
+              </div>     
+              <div class="main_cont"><div class="innercont"></div><div class="innercont"></div><div class="innercont"></div></div>
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+<span class="iwencaitxt"><img src="../../images/iwencai.png" width="150" height="21"/></span>      
+<div class="suggestdiv">
+  <ins id="suggesttext">我想给问财诊股提意见~ </ins><span id="suggestclose">×</span>
+</div>
+        <div class="professiondiv">
+                <div><img src="http://s.thsi.cn/css/m/advancediagnosestock/zhengu.png" width="56" height="56"/></div>
+                <h3>专业诊股<span>多维度诊断，每日操作建议指导</span></h3>
+        </div>
+</div>
+</section>      
+<div class="blank"></div>       
+<section class="bottomfix" id="bottomfix"  onclick="click_dowload(url,taid)">
+  <div class="logo-l">
+    <ins class="logo-cen"></ins><h1><p>同花顺手机炒股</p><p class="botimg"></p></h1>
+  </div>
+  <a href="javascript:void(0);" id="dbdown" class="openbtn">立即下载</a>
+</section>
+<script type="text/javascript" src="http://s.thsi.cn/js/m/advancediagnosestock/common.20160310.js"></script>
+</body>
+</html>
